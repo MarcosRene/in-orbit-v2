@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^10.0.2",
+    "@fastify/jwt": "^9.0.2",
     "@paralleldrive/cuid2": "2.2.2",
     "dayjs": "1.11.12",
     "drizzle-orm": "^0.38.3",

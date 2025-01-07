@@ -13,10 +13,16 @@ import { getWeekPendingGoalsRoute } from './routes/get-week-pending-goals'
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { authenticateFromGithub } from './routes/authenticante-from-github'
+import { fastifyJwt } from '@fastify/jwt'
+import { env } from '@/env'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
 app.register(fastifyCors, { origin: '*' })
+
+app.register(fastifyJwt, {
+  secret: env.JWT_SECRET,
+})
 
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
