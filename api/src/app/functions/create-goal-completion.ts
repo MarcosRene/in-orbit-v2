@@ -2,19 +2,21 @@ import { db } from '@/db'
 import { goalCompletions, goals } from '@/db/schema'
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
-import { eq, sql, and } from 'drizzle-orm'
+import { eq, sql, and, gte, lte } from 'drizzle-orm'
 
 dayjs.extend(weekOfYear)
 
 interface CreateGoalCompletionRequest {
+  userId: string
   goalId: string
 }
 
 export async function createGoalCompletion({
+  userId,
   goalId,
 }: CreateGoalCompletionRequest) {
-  const currentYear = dayjs().year()
-  const currentWeek = dayjs().week()
+  const firstDayOfWeek = dayjs().startOf('week').toDate()
+  const lastDayOfWeek = dayjs().endOf('week').toDate()
 
   const goalCompletionCounts = db.$with('goal_completion_counts').as(
     db
@@ -27,9 +29,10 @@ export async function createGoalCompletion({
       .from(goalCompletions)
       .where(
         and(
+          gte(goalCompletions.createdAt, firstDayOfWeek),
+          lte(goalCompletions.createdAt, lastDayOfWeek),
           eq(goalCompletions.goalId, goalId),
-          sql`EXTRACT(YEAR FROM ${goalCompletions.createdAt}) = ${currentYear}`,
-          sql`EXTRACT(WEEK FROM ${goalCompletions.createdAt}) = ${currentWeek}`
+          eq(goals.userId, userId)
         )
       )
       .groupBy(goalCompletions.goalId)
@@ -44,7 +47,7 @@ export async function createGoalCompletion({
     })
     .from(goals)
     .leftJoin(goalCompletionCounts, eq(goals.id, goalCompletionCounts.goalId))
-    .where(eq(goals.id, goalId))
+    .where(and(eq(goals.id, goalId), eq(goals.userId, userId)))
     .limit(1)
 
   const { isIncomplete } = result[0]

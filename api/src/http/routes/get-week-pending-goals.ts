@@ -7,8 +7,8 @@ export const getWeekPendingGoalsRoute: FastifyPluginAsyncZod = async app => {
   app.get(
     '/pending-goals',
     {
+      onRequest: [authenticateUserHook],
       schema: {
-        onRequest: [authenticateUserHook],
         tags: ['goals'],
         description: 'Get pending goals',
         response: {
@@ -25,8 +25,9 @@ export const getWeekPendingGoalsRoute: FastifyPluginAsyncZod = async app => {
         },
       },
     },
-    async (_, reply) => {
-      const { pendingGoals } = await getWeekPendingGoals()
+    async (request, reply) => {
+      const userId = request.user.sub
+      const { pendingGoals } = await getWeekPendingGoals({ userId })
 
       return reply.status(200).send({ pendingGoals })
     }

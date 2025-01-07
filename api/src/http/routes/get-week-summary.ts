@@ -7,8 +7,8 @@ export const getWeekSummaryRoute: FastifyPluginAsyncZod = async app => {
   app.get(
     '/summary',
     {
+      onRequest: [authenticateUserHook],
       schema: {
-        onRequest: [authenticateUserHook],
         tags: ['goals'],
         description: 'Get week summary',
         response: {
@@ -22,7 +22,7 @@ export const getWeekSummaryRoute: FastifyPluginAsyncZod = async app => {
                   z.object({
                     id: z.string(),
                     title: z.string(),
-                    createdAt: z.string(),
+                    completedAt: z.string(),
                   })
                 )
               ),
@@ -31,10 +31,13 @@ export const getWeekSummaryRoute: FastifyPluginAsyncZod = async app => {
         },
       },
     },
-    async (_, reply) => {
-      const { summary } = await getWeekSummary()
+    async request => {
+      const userId = request.user.sub
+      const { summary } = await getWeekSummary({
+        userId,
+      })
 
-      return reply.status(200).send({ summary })
+      return { summary }
     }
   )
 }
