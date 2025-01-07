@@ -24,14 +24,14 @@ type Avatarurl = {
 }
 
 interface AccessTokenResponse {
-  acess_token: string
+  access_token: string
 }
 
 interface GetUserReponse {
-  id: Id
-  name: Gravatarid
-  email: Email
-  avatar_url: Avatarurl
+  id: number
+  name: string | null
+  email: string | null
+  avatar_url: string | null
 }
 
 export async function getAccessTokenFromCode(code: string) {
@@ -42,20 +42,20 @@ export async function getAccessTokenFromCode(code: string) {
   acessTokenURL.searchParams.set('code', code)
 
   const response = await fetch(acessTokenURL, {
-    method: 'POST',
     headers: {
       Accept: 'application/json',
     },
   })
 
-  const { acess_token }: AccessTokenResponse = await response.json()
+  const { access_token }: AccessTokenResponse = await response.json()
 
-  return acess_token
+  return access_token
 }
 
 export async function getUserFromAccessToken(accessToken: string) {
   const response = await fetch('https://api.github.com/user', {
     headers: {
+      Accept: 'application/json',
       Authorization: `token ${accessToken}`,
     },
   })

@@ -12,6 +12,7 @@ import { getWeekSummaryRoute } from './routes/get-week-summary'
 import { getWeekPendingGoalsRoute } from './routes/get-week-pending-goals'
 import { fastifySwagger } from '@fastify/swagger'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
+import { authenticateFromGithub } from './routes/authenticante-from-github'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -34,6 +35,7 @@ app.register(fastifySwaggerUi, {
   routePrefix: '/docs',
 })
 
+app.register(authenticateFromGithub)
 app.register(createGoalRoute)
 app.register(createGoalCompletionRoute)
 app.register(getWeekSummaryRoute)
