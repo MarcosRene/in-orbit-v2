@@ -15,6 +15,7 @@ import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { authenticateFromGithub } from './routes/authenticante-from-github'
 import { fastifyJwt } from '@fastify/jwt'
 import { env } from '@/env'
+import { getProfile } from './routes/get-profile'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -46,6 +47,7 @@ app.register(createGoalRoute)
 app.register(createGoalCompletionRoute)
 app.register(getWeekSummaryRoute)
 app.register(getWeekPendingGoalsRoute)
+app.register(getProfile)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('HTTP server running!')
