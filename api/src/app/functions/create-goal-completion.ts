@@ -27,6 +27,7 @@ export async function createGoalCompletion({
         ),
       })
       .from(goalCompletions)
+      .innerJoin(goals, eq(goals.id, goalCompletions.goalId))
       .where(
         and(
           gte(goalCompletions.createdAt, firstDayOfWeek),
@@ -41,12 +42,12 @@ export async function createGoalCompletion({
   const result = await db
     .with(goalCompletionCounts)
     .select({
-      isIncomplete: sql /*sql*/`
+      isIncomplete: sql/*sql*/ `
         COALESCE(${goals.desiredWeeklyFrequency}, 0) > COALESCE(${goalCompletionCounts.completionCount}, 0)
       `,
     })
     .from(goals)
-    .leftJoin(goalCompletionCounts, eq(goals.id, goalCompletionCounts.goalId))
+    .leftJoin(goalCompletionCounts, eq(goalCompletionCounts.goalId, goals.id))
     .where(and(eq(goals.id, goalId), eq(goals.userId, userId)))
     .limit(1)
 
@@ -67,3 +68,4 @@ export async function createGoalCompletion({
     goalCompletion,
   }
 }
+

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { getUser } from './get-user'
-import { makeUser } from '../../../test/factories/make-user'
+import { makeUser } from '../../../tests/factories/make-user'
 
 describe('Get User', () => {
   it('should be able to get a user', async () => {

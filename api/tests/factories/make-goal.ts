@@ -12,7 +12,7 @@ export async function makeGoal(
     .insert(goals)
     .values({
       title: faker.lorem.word(),
-      desiredWeeklyFrequency: faker.datatype.number({ min: 1, max: 7 }),
+      desiredWeeklyFrequency: faker.number.int({ min: 1, max: 7 }),
       ...overrides,
     })
     .returning()
