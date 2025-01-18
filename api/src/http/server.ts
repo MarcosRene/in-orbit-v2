@@ -16,6 +16,7 @@ import { authenticateFromGithub } from './routes/authenticante-from-github'
 import { fastifyJwt } from '@fastify/jwt'
 import { env } from '@/env'
 import { getProfile } from './routes/get-profile'
+import { getUserExperienceAndLevelRoute } from './routes/get-user-experience-and-level'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -48,7 +49,9 @@ app.register(createGoalCompletionRoute)
 app.register(getWeekSummaryRoute)
 app.register(getWeekPendingGoalsRoute)
 app.register(getProfile)
+app.register(getUserExperienceAndLevelRoute)
 
 app.listen({ port: 3333 }).then(() => {
   console.log('HTTP server running!')
 })
+
