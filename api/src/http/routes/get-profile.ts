@@ -3,13 +3,14 @@ import { z } from 'zod'
 import { authenticateUserHook } from '../hooks/authenticate-user'
 import { getUser } from '@/app/functions/get-user'
 
-export const getProfile: FastifyPluginAsyncZod = async app => {
+export const getProfile: FastifyPluginAsyncZod = async (app) => {
   app.get(
     '/profile',
     {
       onRequest: [authenticateUserHook],
       schema: {
         tags: ['goals'],
+        operationId: 'getProfile',
         description: 'Get authenticated user profile',
         response: {
           200: z.object({
@@ -34,3 +35,4 @@ export const getProfile: FastifyPluginAsyncZod = async app => {
     }
   )
 }
+

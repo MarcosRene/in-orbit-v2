@@ -2,12 +2,13 @@ import { authenticateFromGithubCode } from '@/app/functions/authenticante-from-g
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
-export const authenticateFromGithub: FastifyPluginAsyncZod = async app => {
+export const authenticateFromGithub: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/auth/github',
     {
       schema: {
         tags: ['auth'],
+        operationId: 'authenticateFromGithub',
         description: 'Authenticate user from Github code',
         body: z.object({
           code: z.string(),
@@ -30,3 +31,4 @@ export const authenticateFromGithub: FastifyPluginAsyncZod = async app => {
     }
   )
 }
+

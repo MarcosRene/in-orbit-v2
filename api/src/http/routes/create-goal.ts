@@ -3,13 +3,14 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { authenticateUserHook } from '../hooks/authenticate-user'
 
-export const createGoalRoute: FastifyPluginAsyncZod = async app => {
+export const createGoalRoute: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/goals',
     {
       onRequest: [authenticateUserHook],
       schema: {
         tags: ['goals'],
+        operationId: 'createGoal',
         description: 'Create a goal',
         body: z.object({
           title: z.string(),
@@ -34,3 +35,4 @@ export const createGoalRoute: FastifyPluginAsyncZod = async app => {
     }
   )
 }
+
