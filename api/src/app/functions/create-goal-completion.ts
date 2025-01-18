@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { goalCompletions, goals } from '@/db/schema'
+import { goalCompletions, goals, users } from '@/db/schema'
 import dayjs from 'dayjs'
 import weekOfYear from 'dayjs/plugin/weekOfYear'
 import { eq, sql, and, gte, lte } from 'drizzle-orm'
@@ -42,27 +42,41 @@ export async function createGoalCompletion({
   const result = await db
     .with(goalCompletionCounts)
     .select({
-      isIncomplete: sql/*sql*/ `
-        COALESCE(${goals.desiredWeeklyFrequency}, 0) > COALESCE(${goalCompletionCounts.completionCount}, 0)
-      `,
+      desiredWeeklyFrequency: goals.desiredWeeklyFrequency,
+      completionCount: sql/*sql*/ `
+        COALESCE(${goalCompletionCounts.completionCount}, 0)
+      `.mapWith(Number),
     })
     .from(goals)
     .leftJoin(goalCompletionCounts, eq(goalCompletionCounts.goalId, goals.id))
     .where(and(eq(goals.id, goalId), eq(goals.userId, userId)))
     .limit(1)
 
-  const { isIncomplete } = result[0]
+  const { completionCount, desiredWeeklyFrequency } = result[0]
 
-  if (!isIncomplete) {
+  if (completionCount >= desiredWeeklyFrequency) {
     throw new Error('Goal already completed this week!')
   }
 
-  const [goalCompletion] = await db
-    .insert(goalCompletions)
-    .values({
-      goalId,
-    })
-    .returning()
+  const isLastCompletionFromGoal =
+    completionCount + 1 === desiredWeeklyFrequency
+  const earnedExperience = isLastCompletionFromGoal ? 7 : 5
+
+  const goalCompletion = await db.transaction(async (tx) => {
+    const [goalCompletion] = await db
+      .insert(goalCompletions)
+      .values({ goalId })
+      .returning()
+
+    await db
+      .update(users)
+      .set({
+        experience: sql`${users.experience} + ${earnedExperience}`,
+      })
+      .where(eq(users.id, userId))
+
+    return goalCompletion
+  })
 
   return {
     goalCompletion,
