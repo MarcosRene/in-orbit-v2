@@ -17,16 +17,15 @@ export function Application() {
   }
 
   return (
-    <div>{JSON.stringify(data, null, 2)}</div>
-    // <Dialog>
-    //   {data.summary.total > 0 ? (
-    //     <WeeklySummary summary={data.summary} />
-    //   ) : (
-    //     <EmptyGoals />
-    //   )}
+    <Dialog>
+      {data.summary.total && data.summary.total > 0 ? (
+        <WeeklySummary summary={data.summary} />
+      ) : (
+        <EmptyGoals />
+      )}
 
-    //   <CreateGoal />
-    // </Dialog>
+      <CreateGoal />
+    </Dialog>
   )
 }
 
