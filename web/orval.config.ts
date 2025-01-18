@@ -9,6 +9,16 @@ export default defineConfig({
       client: 'react-query',
       httpClient: 'fetch',
       clean: true,
+
+      override: {
+        fetch: {
+          includeHttpResponseReturnType: false,
+        },
+        mutator: {
+          path: './src/http/client.ts',
+          name: 'http',
+        },
+      },
     },
   },
 })

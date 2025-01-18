@@ -183,7 +183,8 @@
                           "type": "number"
                         },
                         "total": {
-                          "type": "number"
+                          "type": "number",
+                          "nullable": true
                         },
                         "goalsPerDay": {
                           "type": "object",
@@ -209,7 +210,8 @@
                               ],
                               "additionalProperties": false
                             }
-                          }
+                          },
+                          "nullable": true
                         }
                       },
                       "required": [

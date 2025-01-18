@@ -1,16 +1,12 @@
 import { Dialog } from '@radix-ui/react-dialog'
 import { CreateGoal } from '../components/create-goal'
 import { WeeklySummary } from '../components/weekly-summary'
-import { useQuery } from '@tanstack/react-query'
-import { getSummary } from '../http/get-summary'
 import { Loader2 } from 'lucide-react'
 import { EmptyGoals } from '../components/empty-goals'
+import { useGetWeekSummary } from '../http/generated/api'
 
 export function Application() {
-  const { data, isLoading } = useQuery({
-    queryKey: ['summary'],
-    queryFn: getSummary,
-  })
+  const { data, isLoading } = useGetWeekSummary()
 
   if (isLoading || !data) {
     return (
@@ -21,15 +17,16 @@ export function Application() {
   }
 
   return (
-    <Dialog>
-      {data.summary.total > 0 ? (
-        <WeeklySummary summary={data.summary} />
-      ) : (
-        <EmptyGoals />
-      )}
+    <div>{JSON.stringify(data, null, 2)}</div>
+    // <Dialog>
+    //   {data.summary.total > 0 ? (
+    //     <WeeklySummary summary={data.summary} />
+    //   ) : (
+    //     <EmptyGoals />
+    //   )}
 
-      <CreateGoal />
-    </Dialog>
+    //   <CreateGoal />
+    // </Dialog>
   )
 }
 
