@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react'
 import { OutlineButton } from './ui/outline-button'
 import { useQueryClient } from '@tanstack/react-query'
 import {
+  getGetUserExperienceAndLevelQueryKey,
   getGetWeekPendingGoalsQueryKey,
   getGetWeekSummaryQueryKey,
   useCreateGoalCompletion,
@@ -26,6 +27,9 @@ export function PendingGoals() {
       queryKey: getGetWeekPendingGoalsQueryKey(),
     })
     queryClient.invalidateQueries({ queryKey: getGetWeekSummaryQueryKey() })
+    queryClient.invalidateQueries({
+      queryKey: getGetUserExperienceAndLevelQueryKey(),
+    })
   }
 
   return (
